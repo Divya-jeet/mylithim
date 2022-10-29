@@ -18,4 +18,5 @@ const publisherController= require("../controllers/publisherController")
 router.post("/createBook",bookController.createBook)
 // router.get("/getBooksWithAuthorDetails", bookController.getBooksWithAuthorDetails)
 router.post("/newAuthor",authorController.newAuthor)
+router.put("/updateData", bookController.updateData)
 module.exports = router;
