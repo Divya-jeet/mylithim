@@ -2,7 +2,6 @@ const express = require('express');
 const router = express.Router();
 const UserController= require("../controllers/userController")
 const productController= require("../controllers/productController")
-
 const orderController= require("../controllers/orderController")
 const commonMW = require ("../middlewares/commonMiddlewares")
 
@@ -42,7 +41,7 @@ router.get("/test-me", function (req, res) {
 
 // assignment
 
- router.post("/createProduct",productcontroller.createProduct)
+ router.post("/createProduct",productController.createProduct)
 
 // 
  router.post("/createOrder",commonMW.mid1, orderController.createOrder)
