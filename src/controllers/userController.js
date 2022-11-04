@@ -33,11 +33,11 @@ const loginUser = async function (req, res) {
   // The same secret will be used to decode tokens 
   let token = jwt.sign(
     {
-      userId: user._id.toString(),
+      userId: user._id.toString(),//payload
       batch: "thorium",
       organisation: "FunctionUp",
     },
-    "functionup-plutonium-very-very-secret-key"
+    "functionup-plutonium-very-very-secret-key"//secrate key
   );
   res.setHeader("x-auth-token", token);
   res.send({ status: true, token: token });
@@ -92,7 +92,13 @@ const updateUser = async function (req, res) {
   res.send({ status: updatedUser, data: updatedUser });
 };
 
+const deleteUser = async function (req, res) {
+  let userId = req.params.userId;
+  let deleteUser = await userModel.findOneAndUpdate({ _id: userId }, {$set: {isDeleted: true}},{new:true});
+  return res.send({ status:true, Data: deleteUser });  
+};
 module.exports.createUser = createUser;
 module.exports.getUserData = getUserData;
 module.exports.updateUser = updateUser;
 module.exports.loginUser = loginUser;
+module.exports.deleteUser = deleteUser;
