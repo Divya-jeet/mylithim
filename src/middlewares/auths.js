@@ -1,3 +1,4 @@
+const jwt = require('jsonwebtoken');
 const mid1 = function (req, res, next) {
 
     let token = req.headers["x-auth-token"];
