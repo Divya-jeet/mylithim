@@ -28,7 +28,7 @@ const loginUser = async function (req, res) {
     let token = jwt.sign(
       {
         userId: user._id.toString(),
-        batch: "plutonium",
+        batch: "lithium",
         organisation: "FUnctionUp",
       },
       "functionup-plutonium-very-very-secret-key"
@@ -82,7 +82,7 @@ const updateUser = async function (req, res) {
 
 const deleteUser = async function(req, res) {   
   try {
-    let userId = req.params.userId
+    let userId = r   
   let user = await userModel.findById(userId) 
   if(!user) {
       return res.status(404).send({status: false, message: "no such user exists"})
