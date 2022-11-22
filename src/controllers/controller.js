@@ -13,6 +13,7 @@ const createCollege = async function (req, res) {
         if (!name) { return res.status(400).send({ status: false, message: "name field is mandatory" }) }
         if (!fullName) { return res.status(400).send({ status: false, message: "fullname field is mandatory" }) }
         if (!logoLink) { return res.status(400).send({ status: false, message: "logoLink field is mandatory" }) }
+         if(req.body.isDeleted==true){ return res.status(400).send({status:false,message:"can't be deleted while creating"})}
 
         //---------checking the mandatory fields------------------
         // if (!(name && fullName)) { return res.status(400).send({ status: false, message: "all fields are mandatory" }) }
@@ -43,6 +44,10 @@ const createCollege = async function (req, res) {
 
         if ((valid(logoLink) == false)) { return res.status(400).send({ status: false, message: "provide a valid logo link" }) }
         if (regForLink(logoLink) == false) { return res.status(400).send({ status: false, message: "invalid link" }) }
+
+        let validLink = await collegeModel.findOne({ logoLink: logoLink })
+        if (validLink) { return res.status(400).send({ status: false, message: "logoLink already present" }) }
+
         //  console.log(regForLink(logoLink))
         req.body.name = name
         req.body.fullName = fullName
@@ -73,7 +78,7 @@ const createIntern = async function (req, res) {
         // if (!(valid(name))) { return res.status(400).send({ status: false, message: "provide a valid name" }) }
         if ((regForName(name) == false)) { return res.status(400).send({ status: false, message: "invalid name" }) }
         //-----------------------validation of email---------------------------------------
-       if (regForEmail(email) == false) { return res.status(400).send({ status: false, message: "provide a valid email" }) }
+        if (regForEmail(email) == false) { return res.status(400).send({ status: false, message: "provide a valid email" }) }
 
         //-----------------validation of mobile number--------------------------
         if ((regForMobileNo(mobile) == false)) { return res.status(400).send({ status: false, message: "provide a valid mobile number" }) }
@@ -132,33 +137,34 @@ const getcollegeData = async function (req, res) {
         if (!input1) { res.status(400).send({ status: false, message: "Please enter collegeName in queryParam" }) }
 
         //Dbcall for getting the CollegeId from Name
-        let collegeDetail = await collegeModel.findOne({ name: input1 })
+        let collegeDetail = await collegeModel.findOne({ name: input1,isDeleted:false})
+
         if (!collegeDetail) return res.status(400).send({ status: false, msg: "college not found" })
         let id = collegeDetail._id.toString()
 
         //-------------Dbcall for grtting internlist from collegeId--------------
-        const internList = await internModel.find({ collegeId: id })
-        if (internList.length !== 0) { 
-        // console.log(internList)
-        let obj = {}
-        obj.name = collegeDetail.name
-        obj.fullname = collegeDetail.fullName
-        obj.logoLink = collegeDetail.logoLink
-        obj.interns = internList
-        // collegeDetail.interns = internList
+        const internList = await internModel.find({ collegeId: id,isDeleted:false })
+        if (internList.length !== 0) {
+            // console.log(internList)
+            let obj = {}
+            obj.name = collegeDetail.name
+            obj.fullname = collegeDetail.fullName
+            obj.logoLink = collegeDetail.logoLink
+            obj.interns = internList
+            // collegeDetail.interns = internList
 
-        res.status(200).send({ status: true, data: obj })
-    
-    }else{
-        let obj = {}
-        obj.name = collegeDetail.name
-        obj.fullname = collegeDetail.fullName
-        obj.logoLink = collegeDetail.logoLink
-        obj.interns = "No Interns Found"
-        // collegeDetail.interns = internList
+            res.status(200).send({ status: true, data: obj })
 
-        res.status(200).send({ status: true, data: obj })
-    }
+        } else {
+            let obj = {}
+            obj.name = collegeDetail.name
+            obj.fullname = collegeDetail.fullName
+            obj.logoLink = collegeDetail.logoLink
+            obj.interns = "No Interns Found"
+            // collegeDetail.interns = internList
+
+            res.status(200).send({ status: true, data: obj })
+        }
 
         // if(!result){res.status(404).send({status:false , message:"Details not found."})}
 
