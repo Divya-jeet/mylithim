@@ -143,7 +143,7 @@ const getcollegeData = async function (req, res) {
         let id = collegeDetail._id.toString()
 
         //-------------Dbcall for grtting internlist from collegeId--------------
-        const internList = await internModel.find({ collegeId: id,isDeleted:false })
+        const internList = await internModel.find({ collegeId: id,isDeleted:false }).select({"name":1,"email":1,"mobile":1})
         if (internList.length !== 0) {
             // console.log(internList)
             let obj = {}
