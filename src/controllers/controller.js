@@ -95,7 +95,7 @@ const createIntern = async function (req, res) {
 
             let collegeNamef = collegeName.trim().toLowerCase()
             console.log(collegeName)
-            if (!valid(req.body.collegeName)) { res.status(400).send({ status: false, message: "enter valid collegeName" }) }
+            if (!valid(req.body.collegeName)) {return res.status(400).send({ status: false, message: "enter valid collegeName" }) }
             let present = await collegeModel.findOne({ name: collegeNamef })
             if (!present) return res.status(404).send({ status: false, message: "college name not present" })
             let id = present._id.toString()
@@ -108,7 +108,7 @@ const createIntern = async function (req, res) {
 
         } else if (req.body.collegeId) {
             let valid = mongoose.Types.ObjectId.isValid(req.body.collegeId)
-            if (!valid) { return res.statud(400).send({ status: false, message: "objectId is invalid" }) }
+            if (!valid) { return res.status(400).send({ status: false, message: "objectId is invalid" }) }
 
             const present = await collegeModel.findOne({ _id: req.body.collegeId })
 
@@ -148,22 +148,22 @@ const getcollegeData = async function (req, res) {
             // console.log(internList)
             let obj = {}
             obj.name = collegeDetail.name
-            obj.fullname = collegeDetail.fullName
+            obj.fullName = collegeDetail.fullName
             obj.logoLink = collegeDetail.logoLink
             obj.interns = internList
             // collegeDetail.interns = internList
 
-            res.status(200).send({ status: true, data: obj })
+            return res.status(200).send({ status: true, data: obj })
 
         } else {
             let obj = {}
             obj.name = collegeDetail.name
-            obj.fullname = collegeDetail.fullName
+            obj.fullName = collegeDetail.fullName
             obj.logoLink = collegeDetail.logoLink
             obj.interns = "No Interns Found"
             // collegeDetail.interns = internList
 
-            res.status(200).send({ status: true, data: obj })
+           return res.status(200).send({ status: true, data: obj })
         }
 
         // if(!result){res.status(404).send({status:false , message:"Details not found."})}
